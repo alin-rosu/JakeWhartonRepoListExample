@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alinrosu.app.jakewhartonrepolistexample.R;
 import com.alinrosu.app.jakewhartonrepolistexample.entities.Owner;
 import com.alinrosu.app.jakewhartonrepolistexample.entities.Repository;
 import com.alinrosu.app.jakewhartonrepolistexample.utils.Alert;
+import com.alinrosu.app.jakewhartonrepolistexample.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
 
     private ArrayList<Repository> mItems = new ArrayList<>();
     private Activity context;
+    private boolean showLoader = false;
 
     public class ViewHolder extends RecyclerView.ViewHolder { //viewholder for my adapter
         @InjectView(R.id.userpic) ImageView pic;
@@ -38,6 +41,7 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
         @InjectView(R.id.user) TextView user;
         @InjectView(R.id.url) TextView url;
         @InjectView(R.id.created) TextView created;
+        @InjectView(R.id.loader) ProgressBar loader;
 
         public ViewHolder(View view){
             super(view);
@@ -57,6 +61,10 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
     public void addItems(ArrayList<Repository> items){ //function to add items to the adapter
         mItems.addAll(items);
         notifyDataSetChanged();
+    }
+
+    public void setShowLoader(boolean showLoader) {
+        this.showLoader = showLoader;
     }
 
     @Override
@@ -108,6 +116,9 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
                     viewHolder.pic.setVisibility(View.GONE);
                 }
             } else viewHolder.user.setText(item.getFull_name());
+            if(position == mItems.size()-1 && showLoader){
+                viewHolder.loader.setVisibility(View.VISIBLE);
+            }else viewHolder.loader.setVisibility(View.GONE);
         }catch (Exception e){
             Log.e("","Error onBindViewHolder: " + e.getMessage());
         }

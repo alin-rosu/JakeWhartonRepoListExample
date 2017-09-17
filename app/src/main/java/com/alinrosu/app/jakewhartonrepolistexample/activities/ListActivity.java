@@ -43,7 +43,7 @@ public class ListActivity extends AppCompatActivity {
         if(Utils.networkIsAvailable(ListActivity.this)){
             Repository.invalidateRealmData();
             moreData = true;
-            willFetchNewData();
+            willFetchNewData(loader);
         }else {
             Toast.makeText(ListActivity.this, getString(R.string.no_internet) , Toast.LENGTH_SHORT).show();
             repositories = new ArrayList<Repository>(Repository.fetchRepositoriesFromDB());
@@ -51,7 +51,7 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    private void willFetchNewData() {
+    private void willFetchNewData(ProgressBar loader) {
         Repository.fetchRepositories(ListActivity.this, page, loader, new StringCallback() {
             @Override
             public void onResponse(Integer code, String string) {
@@ -74,12 +74,13 @@ public class ListActivity extends AppCompatActivity {
                 page = 0;
                 Repository.invalidateRealmData();
                 moreData = true;
-                willFetchNewData();
+                willFetchNewData(loader);
             }
         });
     }
 
     public void setDataToRepository(boolean moreData){ //adds the data to the adapter
+        repositoryAdapter.setShowLoader(false);
         repositoryAdapter.clearItems();
         repositoryAdapter.addItems(repositories);
         if(moreData){
@@ -91,9 +92,10 @@ public class ListActivity extends AppCompatActivity {
         list.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) list.getLayoutManager()) {
             @Override
             public void onLoadMore(int current_page) {
+                repositoryAdapter.setShowLoader(true);
                 Log.i("", "here is the code to populate the next items for the list");
                 page++;
-                willFetchNewData();
+                willFetchNewData(null);
             }
         });
     }
