@@ -13,6 +13,7 @@ import com.alinrosu.app.jakewhartonrepolistexample.R;
 import com.alinrosu.app.jakewhartonrepolistexample.adapter.RepositoryAdapter;
 import com.alinrosu.app.jakewhartonrepolistexample.entities.Repository;
 import com.alinrosu.app.jakewhartonrepolistexample.interfaces.StringCallback;
+import com.alinrosu.app.jakewhartonrepolistexample.utils.Alert;
 import com.alinrosu.app.jakewhartonrepolistexample.utils.EndlessRecyclerOnScrollListener;
 import com.alinrosu.app.jakewhartonrepolistexample.utils.Utils;
 
@@ -41,8 +42,6 @@ public class ListActivity extends AppCompatActivity {
         ButterKnife.inject(ListActivity.this);
         initAdapter();
         if(Utils.networkIsAvailable(ListActivity.this)){
-            Repository.invalidateRealmData();
-            moreData = true;
             willFetchNewData(loader);
         }else {
             Toast.makeText(ListActivity.this, getString(R.string.no_internet) , Toast.LENGTH_SHORT).show();
@@ -52,6 +51,10 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void willFetchNewData(ProgressBar loader) {
+        if(loader != null){
+            Repository.invalidateRealmData();
+            moreData = true;
+        }
         Repository.fetchRepositories(ListActivity.this, page, loader, new StringCallback() {
             @Override
             public void onResponse(Integer code, String string) {
@@ -68,12 +71,10 @@ public class ListActivity extends AppCompatActivity {
         list.setLayoutManager(new LinearLayoutManager(ListActivity.this));
         repositoryAdapter = new RepositoryAdapter(ListActivity.this);
         list.setAdapter(repositoryAdapter);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() { // this is the logic to pull to refresh
             @Override
             public void onRefresh() {
-                page = 0;
-                Repository.invalidateRealmData();
-                moreData = true;
+                page = 1;
                 willFetchNewData(loader);
             }
         });
@@ -86,6 +87,9 @@ public class ListActivity extends AppCompatActivity {
         if(moreData){
             setEndlessScrollListener();
         }else list.setOnScrollListener(null);
+        if(repositories.size() == 0){
+            Alert.show(ListActivity.this, getString(R.string.app_name), getString(R.string.no_repo), null);
+        }
     }
 
     public void setEndlessScrollListener(){ //this class is being used for the pagination, knows when the last item is being fetched
