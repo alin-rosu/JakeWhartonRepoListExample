@@ -81,7 +81,7 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder,final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder,final int position) { //here I set the values for the views inside my viewHolder
         final Repository item = mItems.get(position);
         Log.i("","onBindViewHolder called");
         Owner owner = item.getOwner();
@@ -103,7 +103,7 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
             if (owner != null) {
                 viewHolder.user.setText(item.getOwner().getLogin());
                 if (owner.getAvatar_url() != null) {
-                    Picasso.with(context).load(owner.getAvatar_url()).placeholder(R.mipmap.ic_launcher).into(viewHolder.pic);
+                    Picasso.with(context).load(owner.getAvatar_url()).placeholder(R.mipmap.ic_launcher).into(viewHolder.pic); //I use picasso to load the image
                 } else {
                     viewHolder.pic.setVisibility(View.GONE);
                 }

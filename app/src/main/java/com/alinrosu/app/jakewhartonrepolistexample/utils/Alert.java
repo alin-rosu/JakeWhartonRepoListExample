@@ -17,7 +17,7 @@ import com.alinrosu.app.jakewhartonrepolistexample.interfaces.StringCallback;
  */
 
 public class Alert {
-    public static void show(Context context, String titleS, String desc, final StringCallback back) {
+    public static void show(Context context, String titleS, String desc, final StringCallback back) { //will show an allerg dialog
         try {
             final Dialog dialog = new Dialog(context);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -31,6 +31,8 @@ public class Alert {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    if(back != null)
+                        back.onResponse(0,"");
                 }
             });
             dialog.show();

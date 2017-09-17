@@ -1,5 +1,6 @@
 package com.alinrosu.app.jakewhartonrepolistexample.activities;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,13 +21,14 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static java.security.AccessController.getContext;
-
+//main activity
 public class ListActivity extends AppCompatActivity {
     @InjectView(R.id.list)
     RecyclerView list;
     @InjectView(R.id.loader)
     ProgressBar loader;
+    @InjectView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
     int page = 1;
     ArrayList<Repository> repositories;
     RepositoryAdapter repositoryAdapter;
@@ -57,17 +59,27 @@ public class ListActivity extends AppCompatActivity {
                     moreData = false;
                 repositories = new ArrayList<Repository>(Repository.fetchRepositoriesFromDB());
                 setDataToRepository(moreData);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
 
-    public void initAdapter(){
+    public void initAdapter(){ //initiates the adapter
         list.setLayoutManager(new LinearLayoutManager(ListActivity.this));
         repositoryAdapter = new RepositoryAdapter(ListActivity.this);
         list.setAdapter(repositoryAdapter);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page = 0;
+                Repository.invalidateRealmData();
+                moreData = true;
+                willFetchNewData();
+            }
+        });
     }
 
-    public void setDataToRepository(boolean moreData){
+    public void setDataToRepository(boolean moreData){ //adds the data to the adapter
         repositoryAdapter.clearItems();
         repositoryAdapter.addItems(repositories);
         if(moreData){
@@ -75,7 +87,7 @@ public class ListActivity extends AppCompatActivity {
         }else list.setOnScrollListener(null);
     }
 
-    public void setEndlessScrollListener(){
+    public void setEndlessScrollListener(){ //this class is being used for the pagination, knows when the last item is being fetched
         list.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) list.getLayoutManager()) {
             @Override
             public void onLoadMore(int current_page) {

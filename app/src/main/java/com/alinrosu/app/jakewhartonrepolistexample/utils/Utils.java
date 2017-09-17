@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class Utils {
 
-    public static boolean networkIsAvailable(Context parentActivity) {
+    public static boolean networkIsAvailable(Context parentActivity) { //checks to see if it has internet
         if(isAirplaneModeOn(parentActivity)){
             return  false;
         }else {

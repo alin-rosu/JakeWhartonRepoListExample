@@ -660,7 +660,7 @@ public class Repository extends RealmObject implements Serializable {
                 '}';
     }
 
-    public static void fetchRepositories(final Context context, int page, View loader, final StringCallback callback){
+    public static void fetchRepositories(final Context context, int page, View loader, final StringCallback callback){ //will fetch from the API
         WSCalls.fetchData(Request.Method.GET, Constants.API_ENDPOINT + "?page=" + page + "&per_page=" + Constants.perPage, context, loader, new StringCallback() {
             @Override
             public void onResponse(final Integer code, final String string) {
@@ -696,7 +696,7 @@ public class Repository extends RealmObject implements Serializable {
         });
     }
 
-    public static RealmResults<Repository> fetchRepositoriesFromDB(){
+    public static RealmResults<Repository> fetchRepositoriesFromDB(){ //will fetch from the db the repository
         RealmResults<Repository> repositories = ApplicationClass.getInstance().realm.where(Repository.class).findAllSorted("created_at", Sort.DESCENDING);
         if(repositories != null && repositories.size() > 0){
             for (Repository rep : repositories){
@@ -706,7 +706,7 @@ public class Repository extends RealmObject implements Serializable {
         return repositories;
     }
 
-    public static void invalidateRealmData(){
+    public static void invalidateRealmData(){ //realm data is invalidated
         ApplicationClass.getInstance().getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
