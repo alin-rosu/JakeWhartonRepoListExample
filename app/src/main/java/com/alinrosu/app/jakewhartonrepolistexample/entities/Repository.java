@@ -697,7 +697,7 @@ public class Repository extends RealmObject implements Serializable {
     }
 
     public static RealmResults<Repository> fetchRepositoriesFromDB(){ //will fetch from the db the repository
-        RealmResults<Repository> repositories = ApplicationClass.getInstance().realm.where(Repository.class).findAllSorted("created_at", Sort.DESCENDING);
+        RealmResults<Repository> repositories = ApplicationClass.getInstance().realm.where(Repository.class).findAll();
         if(repositories != null && repositories.size() > 0){
             for (Repository rep : repositories){
                 Log.i("","rep are: " + rep.toString());
