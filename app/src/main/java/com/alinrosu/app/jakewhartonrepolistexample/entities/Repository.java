@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.alinrosu.app.jakewhartonrepolistexample.ApplicationClass;
+import com.alinrosu.app.jakewhartonrepolistexample.R;
 import com.alinrosu.app.jakewhartonrepolistexample.activities.ListActivity;
 import com.alinrosu.app.jakewhartonrepolistexample.interfaces.StringCallback;
+import com.alinrosu.app.jakewhartonrepolistexample.utils.Alert;
 import com.alinrosu.app.jakewhartonrepolistexample.utils.Constants;
 import com.alinrosu.app.jakewhartonrepolistexample.webservice.WSCalls;
 import com.android.volley.Request;
@@ -658,7 +660,7 @@ public class Repository extends RealmObject implements Serializable {
                 '}';
     }
 
-    public static void fetchRepositories(Context context, int page, View loader, final StringCallback callback){
+    public static void fetchRepositories(final Context context, int page, View loader, final StringCallback callback){
         WSCalls.fetchData(Request.Method.GET, Constants.API_ENDPOINT + "?page=" + page + "&per_page=" + Constants.perPage, context, loader, new StringCallback() {
             @Override
             public void onResponse(final Integer code, final String string) {
@@ -682,7 +684,10 @@ public class Repository extends RealmObject implements Serializable {
                             callback.onResponse(code, "");
                         }
                     });
-                }else callback.onResponse(code, string);
+                }else {
+                    Alert.show(context, context.getString(R.string.error), string, null);
+                    callback.onResponse(code, string);
+                }
             }
         });
     }
