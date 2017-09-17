@@ -43,13 +43,13 @@ public class ListActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Integer code, String string) {
                     repositories = new ArrayList<Repository>(Repository.fetchRepositoriesFromDB());
-//                    setDataToRepository();
+                    setDataToRepository();
                 }
             });
         }else {
             Toast.makeText(ListActivity.this, getString(R.string.no_internet) , Toast.LENGTH_SHORT).show();
             repositories = new ArrayList<Repository>(Repository.fetchRepositoriesFromDB());
-//            setDataToRepository();
+            setDataToRepository();
         }
     }
 
