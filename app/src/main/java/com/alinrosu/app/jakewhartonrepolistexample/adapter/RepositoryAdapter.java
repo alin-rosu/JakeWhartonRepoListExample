@@ -1,6 +1,9 @@
 package com.alinrosu.app.jakewhartonrepolistexample.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.alinrosu.app.jakewhartonrepolistexample.R;
 import com.alinrosu.app.jakewhartonrepolistexample.entities.Owner;
 import com.alinrosu.app.jakewhartonrepolistexample.entities.Repository;
+import com.alinrosu.app.jakewhartonrepolistexample.utils.Alert;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
         @InjectView(R.id.userpic) ImageView pic;
         @InjectView(R.id.title) TextView title;
         @InjectView(R.id.user) TextView user;
+        @InjectView(R.id.url) TextView url;
         @InjectView(R.id.created) TextView created;
 
         public ViewHolder(View view){
@@ -83,6 +88,18 @@ public class RepositoryAdapter  extends RecyclerView.Adapter<RepositoryAdapter.V
         try {
             viewHolder.title.setText(item.getName());
             viewHolder.created.setText(item.getCreated_at());
+            viewHolder.url.setText(item.getHtml_url());
+            viewHolder.url.setPaintFlags(viewHolder.url.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            viewHolder.url.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getHtml_url())));
+                    }catch (Exception e){
+                        Alert.show(context, context.getString(R.string.error), e.getMessage(), null);
+                    }
+                }
+            });
             if (owner != null) {
                 viewHolder.user.setText(item.getOwner().getLogin());
                 if (owner.getAvatar_url() != null) {

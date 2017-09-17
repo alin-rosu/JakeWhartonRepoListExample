@@ -666,24 +666,28 @@ public class Repository extends RealmObject implements Serializable {
             public void onResponse(final Integer code, final String string) {
                 if(string != null && code == 200){
                     Log.i("","Response for Fetch repositories is: " + string);
-                    ApplicationClass.getInstance().getRealm().executeTransactionAsync(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            realm.createOrUpdateAllFromJson(Repository.class, string);
-                        }
-                    }, new Realm.Transaction.OnSuccess() {
-                        @Override
-                        public void onSuccess() {
-                            Log.i("","REALM onSuccess saved repository");
-                            callback.onResponse(code, "");
-                        }
-                    }, new Realm.Transaction.OnError() {
-                        @Override
-                        public void onError(Throwable error) {
-                            Log.i("","REALM onError repository error: " + error.toString());
-                            callback.onResponse(code, "");
-                        }
-                    });
+                    if(string.contentEquals("[]")){
+                        callback.onResponse(code, "noMore");
+                    }else {
+                        ApplicationClass.getInstance().getRealm().executeTransactionAsync(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.createOrUpdateAllFromJson(Repository.class, string);
+                            }
+                        }, new Realm.Transaction.OnSuccess() {
+                            @Override
+                            public void onSuccess() {
+                                Log.i("", "REALM onSuccess saved repository");
+                                callback.onResponse(code, string);
+                            }
+                        }, new Realm.Transaction.OnError() {
+                            @Override
+                            public void onError(Throwable error) {
+                                Log.i("", "REALM onError repository error: " + error.toString());
+                                callback.onResponse(code, "");
+                            }
+                        });
+                    }
                 }else {
                     Alert.show(context, context.getString(R.string.error), string, null);
                     callback.onResponse(code, string);
@@ -700,5 +704,14 @@ public class Repository extends RealmObject implements Serializable {
             }
         }
         return repositories;
+    }
+
+    public static void invalidateRealmData(){
+        ApplicationClass.getInstance().getRealm().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.deleteAll();
+            }
+        });
     }
 }

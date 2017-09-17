@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
+    android:layout_margin="10dp"
     android:background="@drawable/rounded_layout">
     <TextView
         android:layout_width="wrap_content"
@@ -14,16 +15,26 @@
         android:layout_below="@id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:id="@+id/url"/>
+
+    <TextView
+        android:layout_below="@id/url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:textSize="20dp"
         android:id="@+id/user"/>
 
     <TextView
-        android:layout_below="@id/title"
+        android:layout_below="@id/url"
         android:layout_toRightOf="@id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:gravity="right"
         android:textSize="20dp"
         android:layout_alignParentRight="true"
         android:id="@+id/created"/>
